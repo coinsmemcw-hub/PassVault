@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><title>PassVault</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#070b14;--p:#0e1524;--p2:#131c30;--b:#1f2a44;--t:#e8edf8;--m:#8593b3;--a:#2f7bff;--r:#ff4d5e;--g:#2fd08a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#070b14}}
+*{box-sizing:border-box}html{height:100%}body{margin:0;height:100%;background:radial-gradient(circle at 20% 0,#14264d,var(--bg) 60%);color:var(--t);font:14px system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:var(--p2);border:1px solid var(--b);border-radius:10px;padding:8px 12px;display:inline-flex;align-items:center;gap:6px}
+button:hover{border-color:var(--a)}.pri{background:var(--a);border-color:var(--a);color:#fff}.dng{color:var(--r);background:#2a1119;border-color:#4a1d28}
+input,select,textarea{width:100%;background:var(--p2);border:1px solid var(--b);border-radius:10px;padding:10px 12px;outline:0}
+input:focus,select:focus,textarea:focus{border-color:var(--a)}
+label{display:block;color:var(--m);font-size:12px;margin:10px 0 4px}
+.hide{display:none!important}
+#auth{min-height:100%;display:grid;place-items:center;padding:16px}
+.card{background:var(--p);border:1px solid var(--b);border-radius:18px;padding:26px;width:100%;max-width:400px;box-shadow:0 20px 60px #0008}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;margin-bottom:6px}
+.lk{width:38px;height:38px;border-radius:10px;background:#000;display:grid;place-items:center;border:1px solid var(--b)}
+.tabs{display:flex;gap:6px;margin:14px 0}.tabs button{flex:1;justify-content:center}.tabs .on{background:var(--a);border-color:var(--a)}
+.err{color:var(--r);font-size:12px;min-height:16px;margin-top:8px}
+.note{background:#102447;border:1px solid #1d3d78;border-radius:10px;padding:10px;font-size:12px;margin-top:10px}
+#app{height:100%;display:grid;grid-template-columns:230px minmax(280px,1fr) 340px;grid-template-rows:56px 1fr;max-width:1300px;margin:0 auto;background:var(--p);border:1px solid var(--b)}
+header{grid-column:1/4;display:flex;align-items:center;gap:14px;padding:0 14px;border-bottom:1px solid var(--b)}
+header .s{flex:1;max-width:420px;position:relative}
+.u{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px}.u i{color:var(--a);font-style:normal;display:block}
+nav{padding:12px;border-right:1px solid var(--b);overflow:auto;display:flex;flex-direction:column;gap:2px}
+nav .i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;color:#c4cde2}
+nav .i:hover{background:var(--p2)}nav .i.on{background:#16315f;color:#fff}nav .i b{margin-left:auto;font-weight:400;color:var(--m);font-size:12px}
+nav h4{margin:14px 10px 4px;color:var(--m);font-weight:500}
+.use{margin-top:auto;border:1px solid var(--b);border-radius:12px;padding:12px;font-size:12px;color:var(--m)}
+.bar{height:5px;background:var(--b);border-radius:9px;margin-top:8px}.bar div{height:100%;background:var(--a);border-radius:9px}
+main{padding:14px;overflow:auto}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}.top h2{margin:0;font-size:18px}.top select{width:auto;margin-left:auto}
+.row{display:flex;align-items:center;gap:12px;background:var(--p2);border:1px solid var(--b);border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.row.on{border-color:var(--a);box-shadow:0 0 0 1px var(--a)}.row .n{font-weight:600}.row .c{color:var(--m);font-size:12px}.row .x{flex:1;min-width:0}
+.ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:20px;flex:none;overflow:hidden}
+.ic svg{width:60%;height:60%}
+aside{border-left:1px solid var(--b);padding:14px;overflow:auto}
+.hd{display:flex;gap:12px;align-items:center;margin-bottom:12px}.hd h3{margin:0;font-size:20px}
+.f{background:var(--p2);border:1px solid var(--b);border-radius:12px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.f div{flex:1;min-width:0;word-break:break-all}.f small{display:block;color:var(--m);font-size:12px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.acts button{flex:1;justify-content:center}
+.empty{color:var(--m);text-align:center;padding:40px 10px}
+#modal{position:fixed;inset:0;background:#000a;display:grid;place-items:center;padding:12px;z-index:9}
+#modal .card{max-height:92%;overflow:auto}
+#toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#16315f;border:1px solid var(--a);padding:10px 16px;border-radius:12px;z-index:20;max-width:90%}
+@media(max-width:900px){#app{grid-template-columns:1fr;grid-template-rows:56px auto 1fr auto}header{grid-column:1}nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--b)}nav h4,.use{display:none}nav .i{white-space:nowrap}aside{border-left:0;border-top:1px solid var(--b)}html,body{height:auto}#app{height:auto;min-height:100%}}
+</style></head><body>
+
+<div id="auth">
+ <div class="card">
+  <div class="logo"><span class="lk">🔒</span>PassVault</div>
+  <div style="color:var(--m)">Ваши данные — под защитой</div>
+  <div id="step1">
+   <div class="tabs"><button id="tL" class="on">Вход</button><button id="tR">Регистрация</button></div>
+   <label>Почта</label><input id="em" type="email" autocomplete="email" placeholder="you@mail.com">
+   <label>Мастер-пароль</label><input id="mp" type="password" autocomplete="current-password" placeholder="Минимум 8 символов">
+   <button id="go" class="pri" style="width:100%;justify-content:center;margin-top:14px">Войти</button>
+   <div class="err" id="er"></div>
+  </div>
+  <div id="step2" class="hide">
+   <label>Код подтверждения из письма</label><input id="cd" inputmode="numeric" maxlength="6" placeholder="000000">
+   <div class="note" id="mail"></div>
+   <button id="ok" class="pri" style="width:100%;justify-content:center;margin-top:14px">Подтвердить почту</button>
+   <div class="err" id="er2"></div>
+  </div>
+  <div class="note">🔐 Пароли шифруются AES-256 прямо в вашем браузере мастер-паролем. Мастер-пароль нигде не хранится — восстановить его невозможно.</div>
+ </div>
+</div>
+
+<div id="app" class="hide">
+ <header>
+  <div class="logo" style="margin:0"><span class="lk">🔒</span>PassVault</div>
+  <div class="s"><input id="q" placeholder="Поиск аккаунтов, сервисов…  Ctrl + K"></div>
+  <div class="u"><span>🕶️</span><div><span id="who"></span><i>Премиум</i></div><button id="out">Выйти</button></div>
+ </header>
+ <nav id="nav"></nav>
+ <main><div class="top"><h2 id="ttl">Все аккаунты</h2><span id="cnt" style="color:var(--m)"></span>
+  <select id="sort"><option value="ts">По дате добавления</option><option value="name">По названию</option></select>
+  <button class="pri" id="add">＋ Добавить</button></div><div id="list"></div></main>
+ <aside id="det"></aside>
+</div>
+<div id="modal" class="hide"></div><div id="toast" class="hide"></div>
+
+<script>
+const CATS=[["Игры","🎮"],["Соцсети","👥"],["Мессенджеры","✈️"],["Работа","💼"],["Магазины","🛒"],["Финансы","💳"],["Развлечения","▶️"],["Сайты","🌐"],["Другое","⋯"]];
+// service icons: [bg, glyph(svg or letter), default category, url]
+const W='fill="#fff"';
+const SV={
+Roblox:["#111",'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" transform="rotate(15 12 12)" '+W+'/><rect x="10" y="10" width="4" height="4" fill="#111" transform="rotate(15 12 12)"/></svg>',0,"roblox.com"],
+Telegram:["linear-gradient(#37aee2,#1e96c8)",'<svg viewBox="0 0 24 24"><path d="M2 11l19-8-3 18-6-5-3 3v-6l9-8-11 7z" '+W+'/></svg>',2,"telegram.org"],
+Minecraft:["linear-gradient(#6aa84f 40%,#7a5230 40%)","M",0,"minecraft.net"],
+YouTube:["#f00",'<svg viewBox="0 0 24 24"><path d="M9 7l8 5-8 5z" '+W+'/></svg>',1,"youtube.com"],
+Discord:["#5865f2",'<svg viewBox="0 0 24 24"><path d="M5 7c2-1 4-2 7-2s5 1 7 2c1 3 2 6 2 10-2 2-4 2-5 2l-1-2c-2 1-6 1-8 0l-1 2c-1 0-3 0-5-2 0-4 1-7 2-10z" '+W+'/><circle cx="9" cy="12" r="1.6" fill="#5865f2"/><circle cx="15" cy="12" r="1.6" fill="#5865f2"/></svg>',2,"discord.com"],
+Instagram:["linear-gradient(45deg,#fd5949,#d6249f,#285aeb)",'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="#fff"/></svg>',1,"instagram.com"],
+Steam:["linear-gradient(#1b2838,#2a475e)",'<svg viewBox="0 0 24 24"><circle cx="15" cy="9" r="4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="8" cy="16" r="3" '+W+'/><path d="M3 14l5 2" stroke="#fff" stroke-width="2"/></svg>',0,"store.steampowered.com"],
+Google:["#fff","G",3,"google.com"],
+Twitch:["#9146ff",'<svg viewBox="0 0 24 24"><path d="M4 3h16v11l-5 5h-4l-3 3v-3H4z" '+W+'/><path d="M10 7v5M15 7v5" stroke="#9146ff" stroke-width="2"/></svg>',6,"twitch.tv"],
+Spotify:["#1db954",'<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M6 9c4-1 9-1 13 1M7 13c3-1 7-1 10 1M8 17c2-1 5-1 7 0"/></svg>',6,"spotify.com"],
+GitHub:["#24292f","GH",3,"github.com"],Netflix:["#000","N",6,"netflix.com"],Amazon:["#ff9900","a",4,"amazon.com"],Facebook:["#1877f2","f",1,"facebook.com"],"X (Twitter)":["#000","X",1,"x.com"],VK:["#0077ff","VK",1,"vk.com"],PayPal:["#003087","P",5,"paypal.com"],Epic:["#2a2a2a","E",0,"epicgames.com"]};
+const cl=s=>{try{return JSON.parse(JSON.stringify(s))}catch(e){return s}};
+function icon(n,sz){const k=Object.keys(SV).find(x=>x.toLowerCase()===(n||"").trim().toLowerCase());const s=sz||46;
+ if(k){const[b,g]=SV[k];const dk=k==="Google";return`<div class="ic" style="background:${b};width:${s}px;height:${s}px;${dk?"color:#4285f4;":""}">${g}</div>`}
+ const h=[...(n||"?")].reduce((a,c)=>a+c.charCodeAt(0),0)%360;return`<div class="ic" style="width:${s}px;height:${s}px;background:hsl(${h} 55% 42%)">${esc((n||"?")[0].toUpperCase())}</div>`}
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=id=>document.getElementById(id);
+
+// ---------- storage: shared db (private per user) with localStorage fallback ----------
+let dbc=null,uid="local";
+(async()=>{try{const u=await claude.use("user");const d=await claude.use("db");if(u&&d){uid=await u.id();dbc=d.collection("data/users/"+uid)}}catch(e){}})();
+async function ready(){for(let i=0;i<30&&!dbc;i++){await new Promise(r=>setTimeout(r,100))}}
+const K=e=>"acct_"+e.replace(/[^a-z0-9]/g,"_");
+async function load(e){await ready();if(dbc){try{const d=await dbc.doc(K(e)).get();const v=d&&(d.data?d.data():d);if(v&&v.salt)return v}catch(x){}}
+ try{return JSON.parse(localStorage.getItem("pv:"+K(e)))}catch(x){return null}}
+async function save(e,rec){await ready();if(dbc){try{await dbc.doc(K(e)).set(rec);return}catch(x){}}try{localStorage.setItem("pv:"+K(e),JSON.stringify(rec))}catch(x){}}
+
+// ---------- crypto ----------
+const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b))),ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function key(pw,salt){const m=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);
+ return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:200000,hash:"SHA-256"},m,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])}
+async function enc(k,obj){const iv=crypto.getRandomValues(new Uint8Array(12));const c=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(JSON.stringify(obj)));return b64(iv)+"."+b64(c)}
+async function dec(k,s){const[i,c]=s.split(".");return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:ub(i)},k,ub(c))))}
+
+// ---------- auth ----------
+let mode="L",pend=null,S=null; // S={email,key,salt,items}
+const tab=m=>{mode=m;$("tL").classList.toggle("on",m=="L");$("tR").classList.toggle("on",m=="R");$("go").textContent=m=="L"?"Войти":"Создать аккаунт";$("er").textContent=""};
+$("tL").onclick=()=>tab("L");$("tR").onclick=()=>tab("R");
+$("go").onclick=async()=>{const e=$("em").value.trim().toLowerCase(),p=$("mp").value;$("er").textContent="";
+ if(!/^\S+@\S+\.\S+$/.test(e))return $("er").textContent="Введите корректную почту";
+ if(p.length<8)return $("er").textContent="Мастер-пароль — минимум 8 символов";
+ const rec=await load(e);
+ if(mode=="R"){if(rec)return $("er").textContent="Аккаунт уже существует — войдите";
+  const code=String(crypto.getRandomValues(new Uint32Array(1))[0]%1000000).padStart(6,"0");pend={e,p,code,t:Date.now()};
+  $("mail").innerHTML="✉️ Письмо для <b>"+esc(e)+"</b>.<br>В демо-версии отправка почты недоступна (нет почтового сервера), поэтому код показан здесь: <b style='font-size:18px;letter-spacing:3px'>"+code+"</b>";
+  $("step1").classList.add("hide");$("step2").classList.remove("hide");return}
+ if(!rec)return $("er").textContent="Аккаунт не найден";
+ if(!rec.verified)return $("er").textContent="Почта не подтверждена";
+ try{const k=await key(p,ub(rec.salt));const items=await dec(k,rec.data);S={email:e,key:k,salt:rec.salt,items};start()}catch(x){$("er").textContent="Неверный мастер-пароль"}};
+$("ok").onclick=async()=>{if(!pend)return;if($("cd").value.trim()!==pend.code||Date.now()-pend.t>6e5)return $("er2").textContent="Неверный или устаревший код";
+ const salt=crypto.getRandomValues(new Uint8Array(16)),k=await key(pend.p,salt);
+ await save(pend.e,{salt:b64(salt),verified:true,email:pend.e,created:Date.now(),data:await enc(k,[])});
+ S={email:pend.e,key:k,salt:b64(salt),items:[]};pend=null;start()};
+$("out").onclick=()=>{S=null;sel=null;$("app").classList.add("hide");$("auth").classList.remove("hide");$("mp").value="";$("step2").classList.add("hide");$("step1").classList.remove("hide")};
+const persist=async()=>save(S.email,{salt:S.salt,verified:true,email:S.email,data:await enc(S.key,S.items)});
+
+// ---------- app ----------
+let cat="all",sel=null,q="";
+function start(){$("auth").classList.add("hide");$("app").classList.remove("hide");$("who").textContent=S.email.split("@")[0];render()}
+const toast=t=>{const e=$("toast");e.textContent=t;e.classList.remove("hide");clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.add("hide"),1800)};
+const copy=async t=>{try{await navigator.clipboard.writeText(t);toast("Скопировано")}catch(e){toast("Не удалось скопировать")}};
+function filtered(){let a=S.items.slice();
+ if(cat=="fav")a=a.filter(x=>x.fav);else if(cat=="rec")a=a.filter(x=>x.rec).sort((x,y)=>y.rec-x.rec).slice(0,8);else if(cat!="all")a=a.filter(x=>x.cat==cat);
+ if(q){const s=q.toLowerCase();a=a.filter(x=>[x.name,x.login,x.email,x.note].join(" ").toLowerCase().includes(s))}
+ const so=$("sort").value;return so=="name"?a.sort((x,y)=>x.name.localeCompare(y.name)):cat=="rec"?a:a.sort((x,y)=>y.ts-x.ts)}
+function render(){const I=S.items,n=c=>I.filter(x=>x.cat==c).length;
+ const it=(id,ic,l,c)=>`<div class="i ${cat==id?"on":""}" data-c="${id}"><span>${ic}</span>${l}<b>${c}</b></div>`;
+ $("nav").innerHTML=it("all","▦","Все аккаунты",I.length)+it("fav","☆","Избранное",I.filter(x=>x.fav).length)+it("rec","🕘","Недавние",I.filter(x=>x.rec).length>8?8:I.filter(x=>x.rec).length)+"<h4>Категории</h4>"+CATS.map(c=>it(c[0],c[1],c[0],n(c[0]))).join("")
+  +`<div class="use">Использовано<div style="color:var(--t);margin-top:4px">${I.length} из 100 аккаунтов <span style="float:right">${I.length}%</span></div><div class="bar"><div style="width:${I.length}%"></div></div></div>`;
+ document.querySelectorAll("#nav .i").forEach(e=>e.onclick=()=>{cat=e.dataset.c;sel=null;render()});
+ const L=filtered();$("ttl").textContent=cat=="all"?"Все аккаунты":cat=="fav"?"Избранное":cat=="rec"?"Недавние":cat;$("cnt").textContent=L.length;
+ if(!sel||!I.find(x=>x.id==sel))sel=L[0]?.id||null;
+ $("list").innerHTML=L.length?L.map(x=>`<div class="row ${x.id==sel?"on":""}" data-i="${x.id}">${icon(x.name)}<div class="x"><div class="n">${esc(x.name)} ${x.fav?"⭐":""}</div><div class="c">${esc(x.cat)}</div></div><button data-o="${x.id}">Открыть ⌄</button></div>`).join(""):`<div class="empty">Здесь пока пусто.<br>Нажмите «Добавить», чтобы сохранить первый аккаунт.</div>`;
+ document.querySelectorAll(".row").forEach(e=>e.onclick=ev=>{if(ev.target.dataset.o){openSite(ev.target.dataset.o);return}sel=e.dataset.i;touch(sel);render()});
+ detail()}
+function touch(id){const x=S.items.find(i=>i.id==id);if(x){x.rec=Date.now();persist()}}
+function openSite(id){const x=S.items.find(i=>i.id==id);if(!x)return;const k=Object.keys(SV).find(s=>s.toLowerCase()==x.name.toLowerCase());const u=x.url||(k?SV[k][3]:"");
+ if(!u)return toast("Адрес сайта не указан");toast("Адрес: "+u.replace(/^https?:\/\//,""));try{window.open(/^https?:/.test(u)?u:"https://"+u,"_blank","noopener")}catch(e){}}
+let shown=false;
+function detail(){const x=S.items.find(i=>i.id==sel);if(!x){$("det").innerHTML='<div class="empty">Выберите аккаунт</div>';return}
+ const f=(l,v,id,extra)=>`<div class="f"><div><small>${l}</small>${v}</div>${extra||""}<button data-cp="${id}">⧉ Копировать</button></div>`;
+ $("det").innerHTML=`<div class="hd">${icon(x.name,64)}<div><h3>${esc(x.name)} <span data-fv style="cursor:pointer">${x.fav?"⭐":"☆"}</span></h3><span class="c" style="color:var(--m)">${esc(x.cat)}</span></div></div>`
+ +f("Логин",esc(x.login),"login")+f("Почта",esc(x.email),"email")
+ +f("Пароль",shown?esc(x.pass):"•".repeat(Math.min(12,x.pass.length||8)),"pass",`<span data-sh style="cursor:pointer">${shown?"🙈":"👁"}</span>`)
+ +`<div class="f"><div><small>Категория</small>${esc(x.cat)}</div></div><div class="f"><div><small>Заметка</small>${esc(x.note)||"—"}</div></div>`
+ +`<div class="acts"><button data-sh>👁 ${shown?"Скрыть":"Показать"} пароль</button><button data-ed>✎ Изменить</button><button class="dng" data-del>🗑 Удалить</button></div>`
+ +`<div class="f" style="display:block"><b>Быстрые действия</b><div class="acts"><button data-cp="login">Копировать логин</button><button data-cp="pass">Копировать пароль</button><button data-site>↗ Открыть сайт</button></div></div>`
+ +`<div style="color:var(--g);font-size:12px;text-align:right">🛡 Данные зашифрованы • AES-256</div>`;
+ const d=$("det");d.querySelectorAll("[data-cp]").forEach(b=>b.onclick=()=>copy(x[b.dataset.cp]));
+ d.querySelectorAll("[data-sh]").forEach(b=>b.onclick=()=>{shown=!shown;detail()});
+ d.querySelector("[data-fv]").onclick=async()=>{x.fav=!x.fav;await persist();render()};
+ d.querySelector("[data-ed]").onclick=()=>form(x);d.querySelector("[data-site]").onclick=()=>openSite(x.id);
+ d.querySelector("[data-del]").onclick=async()=>{if(!confirm("Удалить аккаунт «"+x.name+"»?"))return;S.items=S.items.filter(i=>i.id!=x.id);sel=null;await persist();render()}}
+function gen(){const c="abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%^&*";return[...crypto.getRandomValues(new Uint8Array(16))].map(b=>c[b%c.length]).join("")}
+function form(x){const e=!!x;x=x||{name:"",cat:"Игры",login:"",email:"",pass:"",note:"",url:""};
+ const m=$("modal");m.classList.remove("hide");
+ m.innerHTML=`<div class="card"><h3 style="margin:0 0 6px">${e?"Изменить":"Новый"} аккаунт</h3>
+ <label>Сервис</label><input id="fn" list="sv" value="${esc(x.name)}" placeholder="Roblox, Telegram…"><datalist id="sv">${Object.keys(SV).map(k=>`<option>${esc(k)}`).join("")}</datalist>
+ <label>Категория</label><select id="fc">${CATS.map(c=>`<option ${c[0]==x.cat?"selected":""}>${c[0]}`).join("")}</select>
+ <label>Логин</label><input id="fl" value="${esc(x.login)}"><label>Почта</label><input id="fe" value="${esc(x.email)}">
+ <label>Пароль</label><div style="display:flex;gap:6px"><input id="fp" value="${esc(x.pass)}"><button id="fg" type="button">🎲</button></div>
+ <label>Сайт (необязательно)</label><input id="fu" value="${esc(x.url||"")}" placeholder="example.com"><label>Заметка</label><textarea id="fo" rows="2">${esc(x.note)}</textarea>
+ <div class="err" id="fr"></div><div class="acts"><button id="fx">Отмена</button><button class="pri" id="fs">Сохранить</button></div></div>`;
+ $("fg").onclick=()=>$("fp").value=gen();$("fx").onclick=()=>m.classList.add("hide");
+ $("fn").onchange=()=>{const k=Object.keys(SV).find(s=>s.toLowerCase()==$("fn").value.trim().toLowerCase());if(k&&!e)$("fc").value=CATS[SV[k][2]][0]};
+ $("fs").onclick=async()=>{const n=$("fn").value.trim();if(!n)return $("fr").textContent="Укажите сервис";
+  if(!e&&S.items.length>=100)return $("fr").textContent="Лимит 100 аккаунтов";
+  const o=Object.assign(x,{name:n,cat:$("fc").value,login:$("fl").value,email:$("fe").value,pass:$("fp").value,note:$("fo").value,url:$("fu").value.trim()});
+  if(!e){o.id=crypto.randomUUID();o.ts=Date.now();S.items.push(o)}sel=o.id;await persist();m.classList.add("hide");render()}}
+$("add").onclick=()=>form();$("q").oninput=e=>{q=e.target.value;render()};$("sort").onchange=render;
+addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=="k"){e.preventDefault();$("q").focus()}if(e.key=="Escape")$("modal").classList.add("hide")});
+</script></body></html>
